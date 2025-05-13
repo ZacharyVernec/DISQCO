@@ -47,9 +47,9 @@ def main():
         circuit = transpile(circuit, basis_gates=basis_gates)
 
         print(f'Number of qubits in circuit {circuit.num_qubits}')
-        best_score, time = test_GCP_S(circuit, qpu_sizes, num_partitions)
+        best_score, time = test_GCP_E(circuit, qpu_sizes, num_partitions)
         print(f"Min e-bit count: {best_score}")
-        print(f"Time taken for GCP-S: {time} seconds")
+        print(f"Time taken for GCP-E: {time} seconds")
         print()
 
 if __name__ == "__main__":
