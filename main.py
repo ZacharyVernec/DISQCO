@@ -2,8 +2,14 @@ from qiskit.circuit.library import QFT
 from qiskit import transpile
 
 from disqco.parti.genetic.genetic_algorithm_original import Genetic_Partitioning
+
 from disqco.parti.fgp.fgp_roee import set_initial_partition_fgp
 from disqco.parti.fgp.fgp_roee import main_algorithm as fgp_algorithm
+
+from disqco.graphs.GCP_hypergraph import QuantumCircuitHyperGraph
+from disqco.graphs.quantum_network import QuantumNetwork
+from disqco.parti.FM.FM_methods import set_initial_partitions
+from disqco.parti.FM.multilevel_FM import MLFM_recursive
 
 import time
 
@@ -42,6 +48,24 @@ def test_FGP(circuit, qpu_sizes, num_partitions):
     duration = stop - start
     return cost, duration
 
+def test_MLFM_R(circuit, qpu_sizes, num_partitions):
+    quantum_network = QuantumNetwork(qpu_sizes)
+    num_qubits = circuit.num_qubits
+    depth = circuit.depth()
+    start = time.time()
+    assignment = set_initial_partitions(quantum_network, num_qubits, depth, num_partitions)
+    graph = QuantumCircuitHyperGraph(circuit, group_gates=True, anti_diag=True, map_circuit=True)
+    assignment_list_MLFMR, cost_list_MLFMR, _ = MLFM_recursive(graph,
+                                            assignment,  
+                                            qpu_sizes,
+                                            limit=num_qubits,
+                                            log = False)
+    stop = time.time()
+    duration = stop - start
+    cost = min(cost_list_MLFMR)
+    # assignment = assignment_list_MLFMR[np.argmin(cost_list_MLFMR)]
+    return cost, duration
+
 
 def main():
     qpu_size = 8
@@ -61,9 +85,9 @@ def main():
         circuit = transpile(circuit, basis_gates=basis_gates)
 
         print(f'Number of qubits in circuit {circuit.num_qubits}')
-        best_score, time = test_FGP(circuit, qpu_sizes, num_partitions)
+        best_score, time = test_MLFM_R(circuit, qpu_sizes, num_partitions)
         print(f"Min e-bit count: {best_score}")
-        print(f"Time taken for FGP-rOEE: {time} seconds")
+        print(f"Time taken for MLFM_R: {time} seconds")
         print()
 
 if __name__ == "__main__":
