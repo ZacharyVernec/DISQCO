@@ -4,12 +4,12 @@ import numpy as np
 def plot_results():
     # Define file paths
     result_filenames = [
-        "gcp-s-results-data.txt",
-        "gcp-e-results-data.txt",
-        "fgp-roee-results-data.txt",
-        "mlfm-r-results-data.txt",
+        "results-data-gcp-s.txt",
+        "results-data-gcp-e.txt",
+        "results-data-fgp-roee.txt",
+        "results-data-mlfm-r.txt",
     ]
-    method_names = ['-'.join(filename.split("-")[:2]).upper() for filename in result_filenames]
+    method_names = ['-'.join(filename.split("-")[:2]).upper()[:-4] for filename in result_filenames]
 
     # Initialize data storage
     qubit_counts = {method:[] for method in method_names}
