@@ -7,7 +7,8 @@ def plot_results():
         "results-data-gcp-s.txt",
         "results-data-gcp-e.txt",
         "results-data-fgp-roee.txt",
-        "results-data-mlfm-r.txt"
+        "results-data-mlfm-r.txt", 
+        "results-data-zv-thy.txt"
     ]
     method_names = ['-'.join(filename.split("-")[2:]).upper()[:-4] for filename in result_filenames]
 

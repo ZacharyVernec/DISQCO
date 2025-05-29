@@ -66,6 +66,11 @@ def test_MLFM_R(circuit, qpu_sizes, num_partitions):
     # assignment = assignment_list_MLFMR[np.argmin(cost_list_MLFMR)]
     return cost, duration
 
+def test_ZV_THY(circuit, qpu_sizes, num_partitions):
+    qpu_sizes = sorted(qpu_sizes)
+    cost = sum(k*qpu_size for k,qpu_size in enumerate(qpu_sizes))
+    duration = 0
+    return cost, duration
 
 def main():
     qpu_size = 8
@@ -85,9 +90,9 @@ def main():
         circuit = transpile(circuit, basis_gates=basis_gates)
 
         print(f'Number of qubits in circuit {circuit.num_qubits}')
-        best_score, time = test_MLFM_R(circuit, qpu_sizes, num_partitions)
+        best_score, time = test_ZV_THY(circuit, qpu_sizes, num_partitions)
         print(f"Min e-bit count: {best_score}")
-        print(f"Time taken for MLFM_R: {time} seconds")
+        print(f"Time taken for ZV_THY: {time} seconds")
         print()
 
 if __name__ == "__main__":
