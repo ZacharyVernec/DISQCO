@@ -36,36 +36,38 @@ def plot_results():
     x = np.arange(len(qubit_counts))
 
     # Plot e-bit count vs num_qubits
-    width = 1 / len(qubit_counts)  # the width of the bars
-    multiplier = 0
+    width = 1 / (len(qubit_counts)+1)  # the width of the bars
     plt.figure(figsize=(10, 5))
-    for method, e_bit_count in e_bit_counts.items():
-        offset = width * multiplier
+    for i, (method, e_bit_count) in enumerate(e_bit_counts.items()):
+        offset = width * i
         rects = plt.bar(x + offset, e_bit_count, width, label=method)
         plt.bar_label(rects, padding=3)
-        multiplier +=1
     plt.xlabel("Number of Qubits")
     plt.ylabel("Min E-bit Count")
     plt.title("E-bit Count vs Number of Qubits")
-    plt.xticks(x + width, qubit_counts)
+    plt.xticks(x, qubit_counts)
     plt.legend(loc='upper left', ncols=len(method_names))
     plt.legend()
     plt.savefig("bar_chart_e_bit_count_vs_num_qubits.png")
     
     # Plot time vs num_qubits
-    width = 1 / len(qubit_counts)  # the width of the bars
-    multiplier = 0
+    width = 1 / (len(qubit_counts)+1)  # the width of the bars
     plt.figure(figsize=(10, 5))
-    for method, time in times.items():
-        offset = width * multiplier
-        # time_strs = [f"{time_:.8f}" for time_ in time] #TODO rename
+    def formatter(f: float):
+        if f == 0:
+            return "0"
+        elif f < 1:
+            return "~0"
+        else:
+            return str(int(f))
+    for i, (method, time) in enumerate(times.items()):
+        offset = width * i
         rects = plt.bar(x + offset, time, width, label=method)
-        plt.bar_label(rects, padding=3)
-        multiplier +=1
+        plt.bar_label(rects, fmt=formatter, padding=3)
     plt.xlabel("Number of Qubits")
     plt.ylabel("Time (seconds)")
     plt.title("Time vs Number of Qubits")
-    plt.xticks(x + width, qubit_counts)
+    plt.xticks(x, qubit_counts)
     plt.legend(loc='upper left', ncols=len(method_names))
     plt.legend()
     plt.savefig("bar_chart_time_vs_num_qubits.png")
