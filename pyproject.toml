@@ -3,16 +3,21 @@ name = "disqco"
 version = "0.0.3"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.12.*"
-dependencies = ["numpy==2.2.4", 
-                "qiskit==1.2.4", 
-                "qiskit-aer==0.15.1", 
-                "qiskit-qasm3-import==0.5.1", 
-                "networkx", 
-                "matplotlib",
-                "pylatexenc", 
-                "jupyter-tikz", 
-                "ipykernel"]
+requires-python = "==3.11.*"
+dependencies = [
+    "numpy==2.2.4",
+    "qiskit==1.2.4",
+    "qiskit-aer==0.15.1",
+    "qiskit-qasm3-import==0.5.1",
+    "networkx",
+    "matplotlib",
+    "pylatexenc",
+    "jupyter-tikz",
+    "ipykernel",
+    "pygraphviz>=1.14",
+    "pytket-dqc",
+    "pytket-qiskit>=0.60.0",
+]
 
 [build-system]
 requires = ["setuptools"]
@@ -24,8 +29,10 @@ namespaces = false
 
 [tool.uv.sources]
 disqco = { workspace = true }
+pytket-dqc = { git = "https://github.com/CQCL/pytket-dqc.git" }
 
 [dependency-groups]
 dev = [
     "disqco",
+    "pytest>=8.4.0",
 ]
