@@ -17,8 +17,9 @@ def plot_results():
     e_bit_counts = {method:[] for method in method_names}
     times = {method:[] for method in method_names}
 
+
     for filename, method_name in zip(result_filenames, method_names):
-        with open(filename, "r", encoding="utf-16") as f:
+        with open(filename, "r", encoding="utf-8") as f:
             for line in f:
                 if "num_qubits" in line:
                     qubit_count = int(line.split(",")[1].split("=")[1])
