@@ -36,9 +36,12 @@ def plot_results():
     qubit_counts = qubit_counts[method_names[0]]
     x = np.arange(len(qubit_counts))
 
+    # Plotting
+    width = 1 / (len(method_names)+1)  # the width of the bars
+    figsize=(width*len(qubit_counts)*20, 5)
+
     # Plot e-bit count vs num_qubits
-    width = 1 / (len(qubit_counts)+1)  # the width of the bars
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=figsize)
     for i, (method, e_bit_count) in enumerate(e_bit_counts.items()):
         offset = width * i
         rects = plt.bar(x + offset, e_bit_count, width, label=method)
@@ -52,8 +55,7 @@ def plot_results():
     plt.savefig("bar_chart_e_bit_count_vs_num_qubits.png")
     
     # Plot time vs num_qubits
-    width = 1 / (len(qubit_counts)+1)  # the width of the bars
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=figsize)
     def formatter(f: float):
         if f == 0:
             return "0"
