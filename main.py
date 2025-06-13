@@ -4,10 +4,12 @@ import time
 
 import numpy as np
 from pytket.extensions.qiskit import qiskit_to_tk
-from pytket_dqc.allocators import HypergraphPartitioning
+from pytket_dqc.allocators import Annealing, HypergraphPartitioning
 from pytket_dqc.distributors import Distributor
 from pytket_dqc.networks import NISQNetwork
-from pytket_dqc.refiners import EagerHTypeMerge, RepeatRefiner
+from pytket_dqc.refiners import (DetachedGates, EagerHTypeMerge,
+                                 IntertwinedDTypeMerge, NeighbouringDTypeMerge,
+                                 RepeatRefiner, SequenceRefiner, VertexCover)
 from pytket_dqc.utils import DQCPass, ebit_cost
 from qiskit import transpile
 from qiskit.circuit.library import QFT
@@ -123,6 +125,51 @@ def test_PYTKET_PE(circuit, qpu_sizes, num_partitions):
     
     return cost, duration
 
+def test_PYTKET_AESD(circuit, qpu_sizes, num_partitions):
+    qpu_indices = list(range(num_partitions))
+    qpu_cum_sizes = [0] + list(np.cumsum(qpu_sizes))
+    qpu_qubits_ranges = [range(start, stop) for start,stop in zip(qpu_cum_sizes, qpu_cum_sizes[1:])]
+
+    network = NISQNetwork(
+        server_coupling=list(itertools.product(qpu_indices, qpu_indices)), # fully connected
+        server_qubits={qpu_idx:list(qubits_range) for qpu_idx,qubits_range in enumerate(qpu_qubits_ranges)}
+    )
+
+    tk_circuit = qiskit_to_tk(circuit.decompose()) #assumes circuit is a box
+    DQCPass().apply(tk_circuit) # decompose into CP, H, and Rz
+
+    start = time.time()
+    """Equivalent too the workflow EmbedSteinerDetach 
+    cited in [Andres-Matrinez et al. 2024] 
+    but with Annealer instead of KaHyPar, as in [Burt et al. 2024]
+
+    Implemented by merging the pytket-dqc distributors
+    - PartitioningAnnealing, which includes the annealing
+    - CoverEmbedding, which includes the embedding
+    - CoverEmbeddingSteiner, which includes the Steiner tree merging
+    - CoverEmbeddingSteinerDetached, which includes the reallocation using detached gates
+    """
+    # PartitioningAnnealing
+    distribution = Annealing().allocate(tk_circuit, network)  #seed goes as kwarg
+    # CoverEmbedding
+    VertexCover().refine(distribution)
+    # Steiner
+    refiner_list = [
+        NeighbouringDTypeMerge(),
+        IntertwinedDTypeMerge(),
+    ]
+    refiner = RepeatRefiner(SequenceRefiner(refiner_list))
+    refiner.refine(distribution)
+    # Detached
+    DetachedGates().refine(distribution)
+
+    stop = time.time()
+    duration = stop - start
+
+    cost = distribution.cost()
+
+    return cost, duration
+
 
 def main():
     qpu_size = 8
@@ -142,9 +189,9 @@ def main():
         circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
 
         print(f'Number of qubits in circuit {circuit.num_qubits}')
-        best_score, time = test_PYTKET_PE(circuit, qpu_sizes, num_partitions)
+        best_score, time = test_PYTKET_AESD(circuit, qpu_sizes, num_partitions)
         print(f"Min e-bit count: {best_score}")
-        print(f"Time taken for PYTKET_PE: {time} seconds")
+        print(f"Time taken for PYTKET_AESD: {time} seconds")
         print()
 
 if __name__ == "__main__":

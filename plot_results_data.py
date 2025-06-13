@@ -11,6 +11,7 @@ def plot_results():
         "results-data-mlfm-r.txt", 
         "results-data-zv-thy.txt",
         "results-data-pytket-pe.txt",
+        "results-data-pytket-aesd.txt",
     ]
     method_names = ['-'.join(filename.split("-")[2:]).upper()[:-4] for filename in result_filenames]
 
