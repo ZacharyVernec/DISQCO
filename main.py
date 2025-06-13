@@ -1,17 +1,16 @@
-from qiskit.circuit.library import QFT
-from qiskit import transpile
+import time
 
-from disqco.parti.genetic.genetic_algorithm_original import Genetic_Partitioning
-
-from disqco.parti.fgp.fgp_roee import set_initial_partition_fgp
-from disqco.parti.fgp.fgp_roee import main_algorithm as fgp_algorithm
+import numpy as np
 
 from disqco.graphs.GCP_hypergraph import QuantumCircuitHyperGraph
 from disqco.graphs.quantum_network import QuantumNetwork
+from disqco.parti.fgp.fgp_roee import main_algorithm as fgp_algorithm
+from disqco.parti.fgp.fgp_roee import set_initial_partition_fgp
 from disqco.parti.FM.FM_methods import set_initial_partitions
 from disqco.parti.FM.multilevel_FM import MLFM_recursive
+from disqco.parti.genetic.genetic_algorithm_original import \
+    Genetic_Partitioning
 
-import time
 
 def _test_GCP(circuit, qpu_sizes, num_partitions, gate_packing):
     start = time.time()
