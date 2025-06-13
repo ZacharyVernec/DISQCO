@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def plot_results():
     # Define file paths
     result_filenames = [
@@ -8,7 +9,8 @@ def plot_results():
         "results-data-gcp-e.txt",
         "results-data-fgp-roee.txt",
         "results-data-mlfm-r.txt", 
-        "results-data-zv-thy.txt"
+        "results-data-zv-thy.txt",
+        "results-data-pytket-pe.txt",
     ]
     method_names = ['-'.join(filename.split("-")[2:]).upper()[:-4] for filename in result_filenames]
 

@@ -1,6 +1,16 @@
+import itertools
+import logging
 import time
 
 import numpy as np
+from pytket.extensions.qiskit import qiskit_to_tk
+from pytket_dqc.allocators import HypergraphPartitioning
+from pytket_dqc.distributors import Distributor
+from pytket_dqc.networks import NISQNetwork
+from pytket_dqc.refiners import EagerHTypeMerge, RepeatRefiner
+from pytket_dqc.utils import DQCPass, ebit_cost
+from qiskit import transpile
+from qiskit.circuit.library import QFT
 
 from disqco.graphs.GCP_hypergraph import QuantumCircuitHyperGraph
 from disqco.graphs.quantum_network import QuantumNetwork
@@ -71,6 +81,49 @@ def test_ZV_THY(circuit, qpu_sizes, num_partitions):
     duration = 0
     return cost, duration
 
+def test_PYTKET_PE(circuit, qpu_sizes, num_partitions):
+    qpu_indices = list(range(num_partitions))
+    qpu_cum_sizes = [0] + list(np.cumsum(qpu_sizes))
+    qpu_qubits_ranges = [range(start, stop) for start,stop in zip(qpu_cum_sizes, qpu_cum_sizes[1:])]
+
+    network = NISQNetwork(
+        server_coupling=list(itertools.product(qpu_indices, qpu_indices)), # fully connected
+        server_qubits={qpu_idx:list(qubits_range) for qpu_idx,qubits_range in enumerate(qpu_qubits_ranges)}
+    )
+
+    tk_circuit = qiskit_to_tk(circuit.decompose()) #assumes circuit is a box
+    DQCPass().apply(tk_circuit) # decompose into CP, H, and Rz
+
+    start = time.time()
+    """Equivalent too the workflow PartitionEmbed 
+    cited in [Andres-Matrinez et al. 2024] and [Burt et al. 2025]
+
+    Implemented by merging the pytket-dqc distributors
+    - PartitioningHeterogeneous, which includes the HypergraphPartitioning
+    - PartitioningHeterogeneousEmbedding, that includes embedding
+    but removing the boundary reallocation of the latter (i.e. removing the 'Heterogeneous' part).
+    """
+    distribution = HypergraphPartitioning().allocate(tk_circuit, network) #seed goes as kwarg
+    refiner = RepeatRefiner(EagerHTypeMerge())
+    refiner.refine(distribution)
+    
+    stop = time.time()
+    duration = stop - start
+
+    cost = distribution.cost()
+    # distributed_circuit = distribution.to_pytket_circuit()
+    # circuit_cost = ebit_cost(distributed_circuit)
+    # nl_count = distribution.non_local_gate_count()
+    # detached_count = distribution.detached_gate_count()
+
+    # print(f"{cost=}")
+    # print(f"{circuit_cost=}")
+    # print(f"{nl_count=}")
+    # print(f"{detached_count=}")
+    
+    return cost, duration
+
+
 def main():
     qpu_size = 8
     num_qubits_range = range(qpu_size*2, qpu_size*6+1, qpu_size)
@@ -86,13 +139,14 @@ def main():
 
         # Transpile the circuit to the basis gates
         basis_gates = ['u', 'cp']
-        circuit = transpile(circuit, basis_gates=basis_gates)
+        circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
 
         print(f'Number of qubits in circuit {circuit.num_qubits}')
-        best_score, time = test_ZV_THY(circuit, qpu_sizes, num_partitions)
+        best_score, time = test_PYTKET_PE(circuit, qpu_sizes, num_partitions)
         print(f"Min e-bit count: {best_score}")
-        print(f"Time taken for ZV_THY: {time} seconds")
+        print(f"Time taken for PYTKET_PE: {time} seconds")
         print()
 
 if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.WARNING)
     main()
