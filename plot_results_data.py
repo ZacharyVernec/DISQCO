@@ -13,7 +13,15 @@ def plot_results():
         "results-data-pytket-pe.txt",
         "results-data-pytket-aesd.txt",
     ]
-    method_names = ['-'.join(filename.split("-")[2:]).upper()[:-4] for filename in result_filenames]
+    method_names = [
+        "GCP-S",
+        "GCP-E",
+        "FGP-rOEE",
+        "MLFM_R",
+        "ZV_THY",
+        "PYTKET_PE",
+        "PYTKET_AESD",
+    ]
 
     # Initialize data storage
     qubit_counts = {method:[] for method in method_names}
