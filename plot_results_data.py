@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -22,6 +24,8 @@ def plot_results():
         "PYTKET_PE",
         "PYTKET_AESD",
     ]
+
+    folderpath = Path(f'./')
 
     # Initialize data storage
     qubit_counts = {method:[] for method in method_names}
@@ -63,7 +67,7 @@ def plot_results():
     plt.xticks(x, qubit_counts)
     plt.legend(loc='upper left', ncols=len(method_names))
     plt.legend()
-    plt.savefig("bar_chart_e_bit_count_vs_num_qubits.png")
+    plt.savefig(folderpath / "bar_chart_e_bit_count_vs_num_qubits.png")
     
     # Plot time vs num_qubits
     plt.figure(figsize=figsize)
@@ -84,7 +88,7 @@ def plot_results():
     plt.xticks(x, qubit_counts)
     plt.legend(loc='upper left', ncols=len(method_names))
     plt.legend()
-    plt.savefig("bar_chart_time_vs_num_qubits.png")
+    plt.savefig(folderpath / "bar_chart_time_vs_num_qubits.png")
 
 if __name__ == "__main__":
     plot_results()
