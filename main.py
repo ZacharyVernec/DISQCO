@@ -1,5 +1,6 @@
 import itertools
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -173,6 +174,8 @@ def test_PYTKET_AESD(circuit, qpu_sizes, num_partitions):
 
 
 def main():
+    slurm_tmpdir = os.environ['SLURM_TMPDIR']
+
     result_filenames = [
         "results-data-gcp-s.txt",
         "results-data-gcp-e.txt",
@@ -221,6 +224,7 @@ def main():
             depth = circuit.depth()
 
             output_string += f"{qpu_size=}, {num_qubits=}, {num_partitions=}\n"
+            output_string += f"{qpu_sizes=}\n"
 
             # Transpile the circuit to the basis gates
             basis_gates = ['u', 'cp']
@@ -230,8 +234,9 @@ def main():
             best_score, time = test_method(circuit, qpu_sizes, num_partitions)
             output_string += f"Min e-bit count: {best_score}\n"
             output_string += f"Time taken for {method_name}: {time} seconds\n"
+            output_string += '\n'
 
-            filepath = Path(f'./results_massive_qft/{result_filename}')
+            filepath = Path(f'{slurm_tmpdir}') / result_filename
             mode = 'w' if num_partitions == 2 else 'a'
             with filepath.open(mode) as f:
                 print(output_string, file=f)
