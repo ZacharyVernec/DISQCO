@@ -1,0 +1,25 @@
+qpu_size=8, num_qubits=16, num_partitions=2Number of qubits in circuit 16
+Min e-bit count: 8
+Time taken for ZV_THY: 0 seconds
+
+qpu_size=16, num_qubits=32, num_partitions=2Number of qubits in circuit 32
+Min e-bit count: 16
+Time taken for ZV_THY: 0 seconds
+
+qpu_size=24, num_qubits=48, num_partitions=2Number of qubits in circuit 48
+Min e-bit count: 24
+Time taken for ZV_THY: 0 seconds
+
+qpu_size=32, num_qubits=64, num_partitions=2Number of qubits in circuit 64
+Min e-bit count: 32
+Time taken for ZV_THY: 0 seconds
+
+qpu_size=40, num_qubits=80, num_partitions=2Number of qubits in circuit 80
+Min e-bit count: 40
+Time taken for ZV_THY: 0 seconds
+
+qpu_size=48, num_qubits=96, num_partitions=2Number of qubits in circuit 96
+Min e-bit count: 48
+Time taken for ZV_THY: 0 seconds
+
+
