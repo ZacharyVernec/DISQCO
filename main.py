@@ -204,33 +204,36 @@ def main():
     for test_method, method_name, result_filename in zip(test_methods, method_names, result_filenames):
         print(f"Testing {method_name}")
 
-        for num_partitions in [2,4]:
+        num_qubits = 256
+        print(f"Testing {num_qubits=}")
+
+        for num_partitions in [2, 4, 8, 32, 128]:
             print(f"Testing {num_partitions=}")
 
             output_string = ""
 
-            for num_qubits in range(16, 96+1, 16):
-                print(f"Testing {num_qubits=}")
+            circuit = QFT(num_qubits, do_swaps=False)
 
-                circuit = QFT(num_qubits, do_swaps=False)
+            qpu_size = num_qubits // num_partitions #mode
+            remaining_qubits = num_qubits - qpu_size * num_partitions
+            qpu_sizes = [qpu_size] * num_partitions # Equal sized QPUs
+            qpu_sizes[-1] += remaining_qubits # except last QPU
+            depth = circuit.depth()
 
-                qpu_size = num_qubits // num_partitions
-                qpu_sizes = [qpu_size] * num_partitions # Equal sized QPUs
-                depth = circuit.depth()
+            output_string += f"{qpu_size=}, {num_qubits=}, {num_partitions=}\n"
 
-                output_string += f"{qpu_size=}, {num_qubits=}, {num_partitions=}\n"
+            # Transpile the circuit to the basis gates
+            basis_gates = ['u', 'cp']
+            circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
 
-                # Transpile the circuit to the basis gates
-                basis_gates = ['u', 'cp']
-                circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
+            output_string += f'Number of partitions {num_partitions}\n'
+            best_score, time = test_method(circuit, qpu_sizes, num_partitions)
+            output_string += f"Min e-bit count: {best_score}\n"
+            output_string += f"Time taken for {method_name}: {time} seconds\n"
 
-                output_string += f'Number of qubits in circuit {circuit.num_qubits}\n'
-                best_score, time = test_method(circuit, qpu_sizes, num_partitions)
-                output_string += f"Min e-bit count: {best_score}\n"
-                output_string += f"Time taken for {method_name}: {time} seconds\n"
-
-            filepath = Path(f'./results_few_qpus/{num_partitions}_qpus/{result_filename}')
-            with filepath.open('w') as f:
+            filepath = Path(f'./results_massive_qft/{result_filename}')
+            mode = 'w' if num_partitions == 2 else 'a'
+            with filepath.open(mode) as f:
                 print(output_string, file=f)
 
 if __name__ == "__main__":
