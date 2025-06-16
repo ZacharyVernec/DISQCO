@@ -1,0 +1,25 @@
+qpu_size=8, num_qubits=16, num_partitions=2Number of qubits in circuit 16
+Min e-bit count: 44
+Time taken for GCP-S: 11.575857400894165 seconds
+
+qpu_size=16, num_qubits=32, num_partitions=2Number of qubits in circuit 32
+Min e-bit count: 111
+Time taken for GCP-S: 25.903587818145752 seconds
+
+qpu_size=24, num_qubits=48, num_partitions=2Number of qubits in circuit 48
+Min e-bit count: 248
+Time taken for GCP-S: 57.10137605667114 seconds
+
+qpu_size=32, num_qubits=64, num_partitions=2Number of qubits in circuit 64
+Min e-bit count: 341
+Time taken for GCP-S: 105.21096873283386 seconds
+
+qpu_size=40, num_qubits=80, num_partitions=2Number of qubits in circuit 80
+Min e-bit count: 517
+Time taken for GCP-S: 164.98798823356628 seconds
+
+qpu_size=48, num_qubits=96, num_partitions=2Number of qubits in circuit 96
+Min e-bit count: 661
+Time taken for GCP-S: 214.3843412399292 seconds
+
+

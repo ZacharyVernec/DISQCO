@@ -1,0 +1,25 @@
+qpu_size=8, num_qubits=16, num_partitions=2Number of qubits in circuit 16
+Min e-bit count: 32
+Time taken for FGP-rOEE: 0.01465606689453125 seconds
+
+qpu_size=16, num_qubits=32, num_partitions=2Number of qubits in circuit 32
+Min e-bit count: 64
+Time taken for FGP-rOEE: 0.07663869857788086 seconds
+
+qpu_size=24, num_qubits=48, num_partitions=2Number of qubits in circuit 48
+Min e-bit count: 96
+Time taken for FGP-rOEE: 0.19383859634399414 seconds
+
+qpu_size=32, num_qubits=64, num_partitions=2Number of qubits in circuit 64
+Min e-bit count: 128
+Time taken for FGP-rOEE: 0.39893245697021484 seconds
+
+qpu_size=40, num_qubits=80, num_partitions=2Number of qubits in circuit 80
+Min e-bit count: 160
+Time taken for FGP-rOEE: 0.9040670394897461 seconds
+
+qpu_size=48, num_qubits=96, num_partitions=2Number of qubits in circuit 96
+Min e-bit count: 192
+Time taken for FGP-rOEE: 1.4188027381896973 seconds
+
+

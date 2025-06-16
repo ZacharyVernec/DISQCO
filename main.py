@@ -173,34 +173,65 @@ def test_PYTKET_AESD(circuit, qpu_sizes, num_partitions):
 
 
 def main():
-    qpu_size = 8
-    num_qubits_range = range(qpu_size*2, qpu_size*6+1, qpu_size)
+    result_filenames = [
+        "results-data-gcp-s.txt",
+        "results-data-gcp-e.txt",
+        "results-data-fgp-roee.txt",
+        "results-data-mlfm-r.txt", 
+        "results-data-zv-thy.txt",
+        "results-data-pytket-pe.txt",
+        "results-data-pytket-aesd.txt",
+    ]
+    method_names = [
+        "GCP-S",
+        "GCP-E",
+        "FGP-rOEE",
+        "MLFM_R",
+        "ZV_THY",
+        "PYTKET_PE",
+        "PYTKET_AESD",
+    ]
+    test_methods = [
+        test_GCP_S, 
+        test_GCP_E, 
+        test_FGP, 
+        test_MLFM_R, 
+        test_ZV_THY, 
+        test_PYTKET_PE, 
+        test_PYTKET_AESD,
+    ]
 
-    for i,num_qubits in enumerate(num_qubits_range):
-        circuit = QFT(num_qubits, do_swaps=False)
+    for test_method, method_name, result_filename in zip(test_methods, method_names, result_filenames):
+        print(f"Testing {method_name}")
 
-        num_partitions = num_qubits // qpu_size
-        qpu_sizes = [qpu_size] * num_partitions # Equal sized QPUs
-        depth = circuit.depth()
-        
-        output_string = ""
+        for num_partitions in [2,4]:
+            print(f"Testing {num_partitions=}")
 
-        print(f"Testing {qpu_size=}, {num_qubits=}, {num_partitions=}")
-        output_string += f"{qpu_size=}, {num_qubits=}, {num_partitions=}\n"
+            output_string = ""
 
-        # Transpile the circuit to the basis gates
-        basis_gates = ['u', 'cp']
-        circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
+            for num_qubits in range(16, 96+1, 16):
+                print(f"Testing {num_qubits=}")
 
-        output_string += f'Number of qubits in circuit {circuit.num_qubits}\n'
-        best_score, time = test_PYTKET_AESD(circuit, qpu_sizes, num_partitions)
-        output_string += f"Min e-bit count: {best_score}\n"
-        output_string += f"Time taken for PYTKET_AESD: {time} seconds\n"
+                circuit = QFT(num_qubits, do_swaps=False)
 
-        filepath = Path(f'./results-data-pytket-aesd.txt')
-        mode = 'w' if i == 0 else 'a'
-        with filepath.open(mode, encoding='utf-8') as f:
-            print(output_string, file=f)
+                qpu_size = num_qubits // num_partitions
+                qpu_sizes = [qpu_size] * num_partitions # Equal sized QPUs
+                depth = circuit.depth()
+
+                output_string += f"{qpu_size=}, {num_qubits=}, {num_partitions=}\n"
+
+                # Transpile the circuit to the basis gates
+                basis_gates = ['u', 'cp']
+                circuit = transpile(circuit, basis_gates=basis_gates) # TODO refactor
+
+                output_string += f'Number of qubits in circuit {circuit.num_qubits}\n'
+                best_score, time = test_method(circuit, qpu_sizes, num_partitions)
+                output_string += f"Min e-bit count: {best_score}\n"
+                output_string += f"Time taken for {method_name}: {time} seconds\n"
+
+            filepath = Path(f'./results_few_qpus/{num_partitions}_qpus/{result_filename}')
+            with filepath.open('w') as f:
+                print(output_string, file=f)
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.WARNING)
