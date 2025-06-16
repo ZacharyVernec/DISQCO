@@ -5,7 +5,7 @@
 #SBATCH --mem-per-cpu=512M      # Memory per CPU core (e.g., 512M, 1G, 4G)
                                 # (Don't use this specific option on Niagara)
 #SBATCH --time=00-00:20:00      # Max runtime (Days-HH:MM:SS) - JOB KILLED AFTER THIS!
-#SBATCH --job-name=MassiveQFT # Descriptive job name
+#SBATCH --job-name=SmallQFT # Descriptive job name
 #SBATCH --output=/path/to/your/project/logs/%x-%j.out  # Standard output file (%x=jobname, %j=jobid)
                                                       # Ensure '/path/to/your/project/logs' exists on HPC!
 #SBATCH --error=/path/to/your/project/logs/%x-%j.err   # Standard error file

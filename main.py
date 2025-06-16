@@ -207,10 +207,10 @@ def main():
     for test_method, method_name, result_filename in zip(test_methods, method_names, result_filenames):
         print(f"Testing {method_name}")
 
-        num_qubits = 256
+        num_qubits = 8#256
         print(f"Testing {num_qubits=}")
 
-        for num_partitions in [2, 4, 8, 32, 128]:
+        for num_partitions in [2,4]:#[2, 4, 8, 32, 128]:
             print(f"Testing {num_partitions=}")
 
             output_string = ""
