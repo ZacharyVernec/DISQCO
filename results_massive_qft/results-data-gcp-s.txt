@@ -1,0 +1,25 @@
+qpu_size=128, num_qubits=256, num_partitions=2qpu_sizes=[128, 128]Number of partitions 2
+Min e-bit count: 8715
+Time taken for GCP-S: 2020.4324851036072 seconds
+
+
+qpu_size=64, num_qubits=256, num_partitions=4qpu_sizes=[64, 64, 64, 64]Number of partitions 4
+Min e-bit count: 21088
+Time taken for GCP-S: 1600.421777009964 seconds
+
+
+qpu_size=32, num_qubits=256, num_partitions=8qpu_sizes=[32, 32, 32, 32, 32, 32, 32, 32]Number of partitions 8
+Min e-bit count: 26734
+Time taken for GCP-S: 3807.1305499076843 seconds
+
+
+qpu_size=8, num_qubits=256, num_partitions=32qpu_sizes=[8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]Number of partitions 32
+Min e-bit count: 31520
+Time taken for GCP-S: 1626.9459166526794 seconds
+
+
+qpu_size=2, num_qubits=256, num_partitions=128qpu_sizes=[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]Number of partitions 128
+Min e-bit count: 32512
+Time taken for GCP-S: 1489.488917350769 seconds
+
+

@@ -1,0 +1,5 @@
+qpu_size=128, num_qubits=256, num_partitions=2qpu_sizes=[128, 128]Number of partitions 2
+Min e-bit count: 128
+Time taken for MLFM_R: 3669.7749133110046 seconds
+
+
