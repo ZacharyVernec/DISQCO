@@ -1,9 +1,11 @@
 
 module spider scipy-stack/2020a #to get scipy version numbers
 
+module load StdEnv/2020
 module load python/3.11
+module load gcc/9.3.0
 module load kahypar
-module load scipy-stack/??
+module load scipy-stack/2023b
 ENVDIR=/tmp/$RANDOM
 virtualenv --no-download $ENVDIR
 source $ENVDIR/bin/activate
@@ -14,7 +16,7 @@ pip install --no-index path/to/pytket-dqc
 pip download --no-deps git+https://github.com/felix-burt/DISQCO.git
 pip install --no-index path/to/DISQCO
 
-pip freeze --local > $HOME/requirements.txt
+pip freeze --local > /project/def-jacobsen/zachvern/requirements.txt
 deactivate
 rm -rf $ENVDIR
 
