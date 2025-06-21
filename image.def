@@ -1,0 +1,41 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%arguments
+   disqco_checkout="HEAD"
+
+%post
+    apt update
+    apt install -y git cmake make curl wget graphviz graphviz-dev build-essential libboost-all-dev
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    . /root/.local/bin/env
+    cd /root
+    git clone -b ccdb --single-branch https://github.com/ZacharyVernec/DISQCO.git
+    cd /root/DISQCO
+    git checkout {{ disqco_checkout }}
+    uv sync --no-editable
+    . /root/DISQCO/.venv/bin/activate
+    cd /root
+    wget https://github.com/bfgroup/b2/releases/download/5.3.2/b2-5.3.2.tar.bz2
+    tar -xvjf b2-5.3.2.tar.bz2
+    cd ./b2-5.3.2
+    ./bootstrap.sh
+    ./b2 install --prefix=/root/.local/
+    export PATH="/root/.local/bin/b2:$PATH"
+    cd /root
+    git clone --single-branch --recursive https://github.com/kahypar/kahypar.git
+    cd /root/kahypar
+    git checkout 3eafe9202808a4552a832aba07cd1618a5c2b483
+    mkdir /root/kahypar/build && cd /root/kahypar/build
+    cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DKAHYPAR_PYTHON_INTERFACE=1 -DKAHYPAR_INPUT_VALIDATION=OFF
+    cd ./python
+    make
+    cp kahypar*.so /root/DISQCO/.venv/lib/python3.11/site-packages/
+    cd /root
+
+%runscript
+    export SLURM_TMPDIR=/tmp
+    export PATH="/root/.local/bin:/root/.local/bin/b2:$PATH"
+    cd /root/DISQCO
+    . ./.venv/bin/activate
+    uv run --no-sync main.py
