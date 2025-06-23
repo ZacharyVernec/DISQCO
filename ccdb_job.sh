@@ -4,7 +4,7 @@
 #SBATCH -n 16                    # Number of CPU cores (processors)
 #SBATCH --mem-per-cpu=512M      # Memory per CPU core (e.g., 512M, 1G, 4G)
                                 # (Don't use this specific option on Niagara)
-#SBATCH --time=00-00:20:00      # Max runtime (Days-HH:MM:SS) - JOB KILLED AFTER THIS!
+#SBATCH --time=00-00:01:30      # Max runtime (Days-HH:MM:SS) - JOB KILLED AFTER THIS!
 #SBATCH --job-name=SmallQFT # Descriptive job name
 #SBATCH --output=/home/zachvern/logs/%x-%j.out  # Standard output file (%x=jobname, %j=jobid)
                                                       # Ensure '/path/to/your/project/logs' exists on HPC!
@@ -23,7 +23,12 @@ module load apptainer
 apptainer run -C -W ${SLURM_TMPDIR} image.sif
 
 # If your script created important files in $SLURM_TMPDIR, copy them back to persistent storage
-echo "--- Copying data to home (/project/def-jacobsen/zachvern/) ---"
+echo "--- Copying data to home (/home/zachvern/) ---"
+echo "Data in SLURM_TMPDIR: "
+ls -l "$SLURM_TMPDIR"
+echo "Data in SLURM_TMPDIR (recursive): "
+ls -lR
+echo "Copy: "
 cp -v "$SLURM_TMPDIR/tmp/results-data-{gcp-s,gcp-e,fgp-roee,mlfm-r,zv-thy,pytket-de,pytket-aesd}.txt" "/home/zachvern/"
 
 echo "--- Job finished at: $(date) ---"

@@ -32,10 +32,10 @@ def _test_GCP(circuit, qpu_sizes, num_partitions, gate_packing):
     population, max_over_time = genetic_partitioner.run(
         pop_size=100,
         num_generations=100,
-        mutation_rate=0.9, 
-        multi_process=True, 
-        search_method=True, 
-        search_number=100, 
+        mutation_rate=0.9,
+        multi_process=True,
+        search_method=True,
+        search_number=100,
         log=False
     )
     stop = time.time()
@@ -52,7 +52,7 @@ def test_GCP_E(circuit, qpu_sizes, num_partitions):
 def test_FGP(circuit, qpu_sizes, num_partitions):
     start = time.time()
     initial_partition = set_initial_partition_fgp(qpu_info=qpu_sizes, num_partitions=num_partitions)
-    partition, cost, mapping = fgp_algorithm(circuit=circuit, 
+    partition, cost, mapping = fgp_algorithm(circuit=circuit,
                                               qpu_info=qpu_sizes,
                                               initial_partition=initial_partition,
                                               remove_singles=False,
@@ -69,7 +69,7 @@ def test_MLFM_R(circuit, qpu_sizes, num_partitions):
     assignment = set_initial_partitions(quantum_network, num_qubits, depth)
     graph = QuantumCircuitHyperGraph(circuit, group_gates=True, anti_diag=True, map_circuit=True)
     assignment_list_MLFMR, cost_list_MLFMR, _ = MLFM_recursive(graph,
-                                            assignment,  
+                                            assignment,
                                             qpu_sizes,
                                             limit=num_qubits,
                                             log = False)
@@ -99,7 +99,7 @@ def test_PYTKET_PE(circuit, qpu_sizes, num_partitions):
     DQCPass().apply(tk_circuit) # decompose into CP, H, and Rz
 
     start = time.time()
-    """Equivalent too the workflow PartitionEmbed 
+    """Equivalent too the workflow PartitionEmbed
     cited in [Andres-Matrinez et al. 2024] and [Burt et al. 2025]
 
     Implemented by merging the pytket-dqc distributors
@@ -110,7 +110,7 @@ def test_PYTKET_PE(circuit, qpu_sizes, num_partitions):
     distribution = HypergraphPartitioning().allocate(tk_circuit, network) #seed goes as kwarg
     refiner = RepeatRefiner(EagerHTypeMerge())
     refiner.refine(distribution)
-    
+
     stop = time.time()
     duration = stop - start
 
@@ -124,7 +124,7 @@ def test_PYTKET_PE(circuit, qpu_sizes, num_partitions):
     # print(f"{circuit_cost=}")
     # print(f"{nl_count=}")
     # print(f"{detached_count=}")
-    
+
     return cost, duration
 
 def test_PYTKET_AESD(circuit, qpu_sizes, num_partitions):
@@ -141,8 +141,8 @@ def test_PYTKET_AESD(circuit, qpu_sizes, num_partitions):
     DQCPass().apply(tk_circuit) # decompose into CP, H, and Rz
 
     start = time.time()
-    """Equivalent too the workflow EmbedSteinerDetach 
-    cited in [Andres-Matrinez et al. 2024] 
+    """Equivalent too the workflow EmbedSteinerDetach
+    cited in [Andres-Matrinez et al. 2024]
     but with Annealer instead of KaHyPar, as in [Burt et al. 2024]
 
     Implemented by merging the pytket-dqc distributors
@@ -180,7 +180,7 @@ def main():
         "results-data-gcp-s.txt",
         "results-data-gcp-e.txt",
         "results-data-fgp-roee.txt",
-        "results-data-mlfm-r.txt", 
+        "results-data-mlfm-r.txt",
         "results-data-zv-thy.txt",
         "results-data-pytket-pe.txt",
         "results-data-pytket-aesd.txt",
@@ -195,12 +195,12 @@ def main():
         "PYTKET_AESD",
     ]
     test_methods = [
-        test_GCP_S, 
-        test_GCP_E, 
-        test_FGP, 
-        test_MLFM_R, 
-        test_ZV_THY, 
-        test_PYTKET_PE, 
+        test_GCP_S,
+        test_GCP_E,
+        test_FGP,
+        test_MLFM_R,
+        test_ZV_THY,
+        test_PYTKET_PE,
         test_PYTKET_AESD,
     ]
 
@@ -237,6 +237,7 @@ def main():
             output_string += '\n'
 
             filepath = Path(f'{slurm_tmpdir}') / result_filename
+            print(f"Writing to {filepath.resolve()}")
             mode = 'w' if num_partitions == 2 else 'a'
             with filepath.open(mode) as f:
                 print(output_string, file=f)

@@ -39,3 +39,6 @@ From: ubuntu:22.04
     cd /root/DISQCO
     . ./.venv/bin/activate
     uv run --no-sync main.py
+    echo "Done"
+    echo SLURM_TMPDIR = "$SLURM_TMPDIR"
+    ls -l $SLURM_TMPDIR
