@@ -1,0 +1,11 @@
+[submodule "Demos/QASMBench"] 
+    path = Demos/QASMBench 
+    url = git://github.com/pnnl/QASMBench.git
+
+[submodule "Demos/beta/QASMBench"] 
+    path = Demos/beta/QASMBench 
+    url = git://github.com/pnnl/QASMBench.git
+
+[submodule "benchmarking/QASMBench"] 
+    path = benchmarking/QASMBench 
+    url = git://github.com/pnnl/QASMBench.git
